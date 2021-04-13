@@ -1,9 +1,6 @@
 import decidable as d
 
-#TODO: Look at vertex.go, input.go, and tx.go
-#TODO: Vertex optimization
-
-class Output(d.Decidable):
+class Vertex(d.Decidable):
     def __init__(self, id, parents, chit):
         self.parents = parents
         self.chit = chit

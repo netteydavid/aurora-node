@@ -4,15 +4,15 @@ class Decidable:
         self.accepted = False
         self.rejected = False
     
-    def Accept():
+    def Accept(self):
         self.accepted = True
         self.rejected = False
 
-    def Reject():
+    def Reject(self):
         self.accepted = False
         self.rejected = True
 
-    def Status():
+    def Status(self):
         if self.accepted:
             return "accepted"
         elif self.rejected:
