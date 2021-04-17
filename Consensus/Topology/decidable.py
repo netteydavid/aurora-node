@@ -1,8 +1,9 @@
+from ..constants import Status
 class Decidable:
-    def __init__(self, id):
-        self.ID = id
+    def __init__(self):
         self.accepted = False
         self.rejected = False
+        self.status = Status.none
     
     def Accept(self):
         self.accepted = True
@@ -12,10 +13,10 @@ class Decidable:
         self.accepted = False
         self.rejected = True
 
-    def Status(self):
+    def SetStatus(self):
         if self.accepted:
-            return "accepted"
+            self.status = Status.accepted
         elif self.rejected:
-            return "rejected"
+            self.status = Status.rejected
         else:
-            return "none"
+            self.status = Status.none
