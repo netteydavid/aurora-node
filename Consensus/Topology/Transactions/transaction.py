@@ -1,9 +1,29 @@
 import hashlib
 from ..decidable import Decidable
+from ...factories import GetRawTx, GetHash256
 
-# TODO: Figure out best way to get the transaction ID. Generate it or pass it in?
 class Transaction:
-    def __init__(self, version, inputs, outputs, witness):
+    def __init__(self, txid, wid, version, inputs, outputs, witness):
+        
+        #Get raw tx data
+        txRaw = GetRawTx(version, inputs, outputs)
+        # First hashing
+        genId = GetHash256(txRaw)
+        # Second hashing
+        genId = GetHash256(genId)
+        # Check if tx ids match
+        if txid != genId:
+            raise Exception("Invalid transaction id")
+        
+        witId = GetHash256(witness)
+        witId = GetHash256(witId)
+        #Check if the witness Ids match
+        if wid != witId:
+            raise Exception("Invalid transaction id")
+            
+        # Tx and witness Ids
+        self.Id = txid
+        self.witnessId = wid
         # Version number (hex)
         self.version = version
         # Inputs, outputs this transaction spends
@@ -12,39 +32,15 @@ class Transaction:
         self.outputs = outputs
         # Witness data
         self.witness = witness
-        #Generate ID, construct raw tx
-        tx = "{version}"
-        inputCnt = len(inputs)
-        tx += "{inputCnt}"
-        for input in inputs:
-            txid = input.tx
-            outInd = input.output
-            tx += "{txid}{outInd}"
-        outputCnt = len(outputs)
-        tx += "{outputCnt}"
-        for output in outputs:
-            value = output.value
-            locksize = output.locksize
-            lock = output.lock
-            tx += "{value}{locksize}{lock}"
-        txRaw = hex(int(tx, 16))
-        # First hashing
-        hasher = hashlib.sha256()
-        hasher.update(txRaw)
-        self.ID = hasher.hexdigest()
-        # Second hashing
-        hasher2 = hashlib.sha256()
-        hasher2.update(self.ID)
-        self.ID = hasher2.hexdigest()
-
-        self.preferred = self.ID
+        # Assume virtuosity until otherwise stated
+        self.preferred = self.Id
         self.virtuous = True
 
     def IsPreferred(self):
-        return self.preferred == self.ID
+        return self.preferred == self.Id
 
     def SetPreferred(self, txId):
-        self.virtuous = txId == self.ID
+        self.virtuous = txId == self.Id
         self.preferred = txId
 
     def Conflicts(self, tx):

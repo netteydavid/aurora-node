@@ -2,5 +2,5 @@ class Witness:
     def __init__(self, input, script):
         # Associated input
         self.input = input
-        # Signing script
+        # Unlocking script
         self.script = script
